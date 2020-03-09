@@ -56,6 +56,7 @@ RUN yum install -y mariadb-server openssl \
     # Prepare for first run
     && rm -rf /var/vmail
 
+
 # At this point the layer contains services configured by iRedMail installer
 # However, some configurations need to be adapted, so the software composition
 # works under docker. That is the main reason for closing this layer, and opening
@@ -63,6 +64,9 @@ RUN yum install -y mariadb-server openssl \
 
 # Installation of all static files (some of them are conf file overrides)
 ADD static_files /
+
+RUN yum install wget -y && wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo \
+    && yum install git -y && git clone https://github.com/acmesh-official/acme.sh.git && cd ./acme.sh && ./acme.sh --install && cd .. && rm -rf ./acme.sh && chmod +x /create_cert.sh
 
 # Starting mechanism
 ENTRYPOINT ["/entrypoint.sh"]
