@@ -8,10 +8,10 @@ iRedMail允许在几分钟之内免费部署一个开放源代码，全功能的
 
 允许使用的环境变量:
 
-MYSQL_ROOT_PASSWORD: 设置MySQL服务器安装时的初始化root账号密码；  
-POSTMASTER_PASSWORD: 设置postmaster@DOMAIN的初始密码(邮箱管理员账号)，密码设置方式：({PLAIN}password)；  
-SOGO_WORKERS: 调整可能影响SOGo接口性能的参数，默认为: 2；  
-TZ: 设置容器时区；  
+MYSQL_ROOT_PASSWORD: 设置MySQL服务器安装时的初始化root账号密码；
+POSTMASTER_PASSWORD: 设置postmaster@DOMAIN的初始密码(邮箱管理员账号)，密码设置方式：({PLAIN}password)；
+SOGO_WORKERS: 调整可能影响SOGo接口性能的参数，默认为: 2；
+TZ: 设置容器时区；
 
 数据持久化目录:
 
@@ -26,20 +26,28 @@ TZ: 设置容器时区；
  * 修改时区为Asia/Shanghai（非必须）；
  * 修正DKIM初始化长度2048，无法满足国内域名解析TXT 1024长度限制问题；
 
+2020年2月26日主要功能修正 v1.1：
+ * 添加基于letsencrypt ACME DNS证书自动生成功能。
+ * 通过`create_cert.sh`自动配置SMTPS、POPS、IMAPS、HTTPS证书。
+
 纯Dokcker部署方式如下:
 
 ```
 docker run -p 80:80 -p 443:443 \
-           -h HOSTNAME.DOMAIN \
+           -h mail.oubayun.com \
            -e "MYSQL_ROOT_PASSWORD=password" \
            -e "SOGO_WORKERS=1" \
            -e "TZ=Asia/Shanghai" \
+           -e "DP_Id=xxxx" \
+           -e "DP_Key=xxxx" \
+#           -e "Ali_Key=xxxx" \
+#           -e "Ali_Secret=xxxx" \
            -e "POSTMASTER_PASSWORD={PLAIN}password" \
            -e "IREDAPD_PLUGINS=['reject_null_sender', 'reject_sender_login_mismatch', 'greylisting', 'throttle', 'amavisd_wblist', 'sql_alias_access_policy']" \
            -v /srv/iredmail/mysql:/var/lib/mysql \
            -v /srv/iredmail/vmail:/var/vmail \
            -v /srv/iredmail/clamav:/var/lib/clamav \
-           --name=iredmail oubayun/iredmail-k8s:v1.1-latest
+           --name=mail.oubayun.com oubayun/iredmail-k8s:v1.1-latest
 ```
 
 

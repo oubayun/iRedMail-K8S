@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mail01
+  namespace: mail-server
+  labels:
+    app: mail01
+spec:
+  selector:
+    matchLabels:
+      app: mail01
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mail01
+    spec:
+      imagePullSecrets:
+      - name: register-secert
+      containers:
+      - name: mail01
+        securityContext:
+          privileged: true
+        image: oubayun/iredmail-k8s:v1.2-latest
+        command: ["/bin/sh","-c","hostname mail.oubayun.com;echo '127.0.0.1    mail.oubayun.com' >> /etc/hosts;/entrypoint.sh supervisord"]
+        imagePullPolicy: Always
+        env:
+        - name: DP_Id
+          value: 'xxxx'
+        - name: DP_Key
+          value: 'xxxx'
+        # - name: Ali_Key
+        #   value: 'xxxx'
+        # - name: Ali_Secret
+        #   value: 'xxxx'
+        - name: HOSTNAME
+          value: "mail"
+        - name: DOMAIN
+          value: "oubayun.com"
+        - name: MYSQL_ROOT_PASSWORD
+          value: "password"
+        - name: SOGO_WORKERS
+          value: "1"
+        - name: TZ
+          value: "Asia/Shanghai"
+        - name: POSTMASTER_PASSWORD
+          value: "{PLAIN}password"
+        - name: IREDAPD_PLUGINS
+          value: "['reject_null_sender', 'reject_sender_login_mismatch', 'greylisting', 'throttle', 'amavisd_wblist', 'sql_alias_access_policy']"
+        ports:
+        - name: http
+          containerPort: 80
+          protocol: "TCP"
+        - name: https
+          containerPort: 443
+          protocol: "TCP"
+        - name: smtp
+          containerPort: 25
+          protocol: "TCP"
+        - name: smtps
+          containerPort: 465
+          protocol: "TCP"
+        - name: pop3
+          containerPort: 110
+          protocol: "TCP"
+        - name: smtptls
+          containerPort: 587
+          protocol: "TCP"
+        - name: imap
+          containerPort: 143
+          protocol: "TCP"
+        - name: imaps
+          containerPort: 993
+          protocol: "TCP"
+        - name: pop3s
+          containerPort: 995
+          protocol: "TCP"
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1024Mi
+          limits:
+            cpu: 2
+            memory: 4096Mi
+        volumeMounts:
+          #将/var/lib/mysql目录挂载至mail01 PVC的mysql子目录
+          - name: mail01
+            mountPath: /var/lib/mysql
+            subPath: mysql
+          - name: mail01
+            mountPath: /var/vmail
+            subPath: vmail
+          - name: mail01
+            mountPath: /var/lib/clamav
+            subPath: clamav
+      volumes:
+      - name: mail01
+        persistentVolumeClaim:
+          claimName: mail01
