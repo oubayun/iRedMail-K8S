@@ -26,7 +26,7 @@ TZ: 设置容器时区；
  * 修改时区为Asia/Shanghai（非必须）；
  * 修正DKIM初始化长度2048，无法满足国内域名解析TXT 1024长度限制问题；
 
-2020年2月26日主要功能修正 v1.1：
+2020年3月9日主要功能修正 v1.1：
  * 添加基于letsencrypt ACME DNS证书自动生成功能。
  * 通过`create_cert.sh`自动配置SMTPS、POPS、IMAPS、HTTPS证书。
 
