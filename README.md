@@ -50,4 +50,12 @@ docker run -p 80:80 -p 443:443 \
            --name=mail.oubayun.com oubayun/iredmail-k8s:v1.1-latest
 ```
 
+#管理地址: https://mail.xxx.com/iredadmin  
+username: postmaster@xxx.com  
+password: xxxx  
+![](md_images/2020-03-16-16-15-56.png)
+![](md_images/2020-03-16-16-20-57.png)
 
+#登录地址: https://mail.xxx.com/mail
+![](md_images/2020-03-16-16-17-06.png)
+![](md_images/2020-03-16-16-22-53.png)
